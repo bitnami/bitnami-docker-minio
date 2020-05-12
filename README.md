@@ -297,8 +297,8 @@ When using persistence, MinIO will reuse the data configured during the 1st init
 $ docker run --name minio \
     --publish 9000:9000 \
     --env MINIO_FORCE_NEW_KEYS="yes" \
-    --env MINIO_SERVER_ACCESS_KEY="new-minio-access-key" \
-    --env MINIO_SERVER_SECRET_KEY="new-minio-secret-key" \
+    --env MINIO_ACCESS_KEY="new-minio-access-key" \
+    --env MINIO_SECRET_KEY="new-minio-secret-key" \
     --volume /path/to/minio-persistence:/data \
     bitnami/minio:latest
 ```
