@@ -228,14 +228,19 @@ minio_create_default_buckets() {
         read -r -a buckets <<< "$(tr ',;' ' ' <<< "${MINIO_DEFAULT_BUCKETS}")"
         info "Creating default buckets..."
         for b in "${buckets[@]}"; do
+		    read -r -a Options <<< "$(tr ':' ' ' <<< "${b}")"
             if ! minio_client_bucket_exists "local/${b}"; then
                 if [[ -n "${MINIO_REGION_NAME:-}" ]]; then
-                    minio_client_execute mb "--region" "${MINIO_REGION_NAME}" "local/${b}"
+                    minio_client_execute mb "--region" "${MINIO_REGION_NAME}" "local/${Options[0]}"
                 else
-                    minio_client_execute mb "local/${b}"
+                    minio_client_execute mb "local/${Options[0]}"
+                fi
+                if [ ${#Options[@]} -eq 2 ]; then
+                    info "Setting policy ${Options[1]} for local bucket ${Options[0]}"
+                    minio_client_execute policy set "${Options[1]}" local/"${Options[0]}"/
                 fi
             else
-                info "Bucket local/${b} already exists, skipping creation."
+                info "Bucket local/${Options[0]} already exists, skipping creation."
             fi
         done
     fi
