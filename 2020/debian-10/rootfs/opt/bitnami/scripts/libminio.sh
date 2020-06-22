@@ -228,8 +228,8 @@ minio_create_default_buckets() {
         read -r -a buckets <<< "$(tr ',;' ' ' <<< "${MINIO_DEFAULT_BUCKETS}")"
         info "Creating default buckets..."
         for b in "${buckets[@]}"; do
-		    read -r -a Options <<< "$(tr ':' ' ' <<< "${b}")"
-            if ! minio_client_bucket_exists "local/${b}"; then
+            read -r -a Options <<< "$(tr ':' ' ' <<< "${b}")"
+            if ! minio_client_bucket_exists "local/${Options[0]}"; then
                 if [[ -n "${MINIO_REGION_NAME:-}" ]]; then
                     minio_client_execute mb "--region" "${MINIO_REGION_NAME}" "local/${Options[0]}"
                 else
