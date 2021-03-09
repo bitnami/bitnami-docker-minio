@@ -1,0 +1,103 @@
+version: '2'
+
+services:
+  prepare-data:
+    image: 'docker.io/bitnami/bitnami-shell:10'
+    command:
+      - /bin/bash
+      - -ec
+      - |
+        chmod -R g+rwX /data-0-0 /data-0-1 /data-1-0 /data-1-1 /data-2-0 /data-2-1 /data-3-0 /data-3-1
+    volumes:
+      - 'minio_0_data_0:/data-0-0'
+      - 'minio_0_data_1:/data-0-1'
+      - 'minio_1_data_0:/data-1-0'
+      - 'minio_1_data_1:/data-1-1'
+      - 'minio_2_data_0:/data-2-0'
+      - 'minio_2_data_1:/data-2-1'
+      - 'minio_3_data_0:/data-3-0'
+      - 'minio_3_data_1:/data-3-1'
+  minio-0:
+    image: 'docker.io/bitnami/minio:2021-debian-10'
+    ports:
+      - 9000:9000
+    volumes:
+      - 'minio_0_data_0:/data-0'
+      - 'minio_0_data_1:/data-1'
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniosecret
+      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
+      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_SKIP_CLIENT=yes
+    depends_on:
+      - prepare-data
+  minio-1:
+    image: 'docker.io/bitnami/minio:2021-debian-10'
+    volumes:
+      - 'minio_1_data_0:/data-0'
+      - 'minio_1_data_1:/data-1'
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniosecret
+      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
+      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_SKIP_CLIENT=yes
+    depends_on:
+      - prepare-data
+  minio-2:
+    image: 'docker.io/bitnami/minio:2021-debian-10'
+    volumes:
+      - 'minio_2_data_0:/data-0'
+      - 'minio_2_data_1:/data-1'
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniosecret
+      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
+      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_SKIP_CLIENT=yes
+    depends_on:
+      - prepare-data
+  minio-3:
+    image: 'docker.io/bitnami/minio:2021-debian-10'
+    volumes:
+      - 'minio_3_data_0:/data-0'
+      - 'minio_3_data_1:/data-1'
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniosecret
+      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
+      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_SKIP_CLIENT=yes
+    depends_on:
+      - prepare-data
+  minio-client:
+    image: 'docker.io/bitnami/minio-client:2021-debian-10'
+    entrypoint:
+      - sleep
+    command:
+      - infinity
+    environment:
+      - MINIO_SERVER_HOST=minio-0
+      - MINIO_SERVER_ACCESS_KEY=minio
+      - MINIO_SERVER_SECRET_KEY=miniosecret
+    depends_on:
+      - minio-0
+
+volumes:
+  minio_0_data_0:
+    driver: local
+  minio_0_data_1:
+    driver: local
+  minio_1_data_0:
+    driver: local
+  minio_1_data_1:
+    driver: local
+  minio_2_data_0:
+    driver: local
+  minio_2_data_1:
+    driver: local
+  minio_3_data_0:
+    driver: local
+  minio_3_data_1:
+    driver: local
