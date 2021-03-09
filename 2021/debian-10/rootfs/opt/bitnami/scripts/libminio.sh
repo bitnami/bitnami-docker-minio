@@ -69,7 +69,30 @@ EOF
 #   Boolean
 #########################
 is_distributed_ellipses_syntax() {
-    [[ -n "${MINIO_DISTRIBUTED_NODES}" ]] && [[ $MINIO_DISTRIBUTED_NODES == *"..."* ]]
+    ! is_empty_value "$MINIO_DISTRIBUTED_NODES" && [[ $MINIO_DISTRIBUTED_NODES == *"..."* ]]
+}
+
+########################
+# Obtain the list of drives used by the MinIO node
+# Globals:
+#   MINIO_DISTRIBUTED_NODES
+# Arguments:
+#   None
+# Returns:
+#   Array with MinIO node drives
+#########################
+minio_distributed_drives() {
+    local -a drives=()
+    local -a nodes
+
+    if ! is_empty_value "$MINIO_DISTRIBUTED_NODES"; then
+        read -r -a nodes <<< "$(tr ',;' ' ' <<< "${MINIO_DISTRIBUTED_NODES}")"
+        for node in "${nodes[@]}"; do
+            drive="$(parse_uri "${MINIO_SCHEME}://${node}" "path")"
+            drives+=("$drive")
+        done
+    fi
+    echo "${drives[@]}"
 }
 
 ########################

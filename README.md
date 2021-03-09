@@ -265,7 +265,6 @@ services:
       - MINIO_SECRET_KEY=minio-secret-key
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio1,minio2,minio3,minio4
-      - MINIO_SKIP_CLIENT=yes
   minio2:
     image: 'bitnami/minio:latest'
     environment:
@@ -273,7 +272,6 @@ services:
       - MINIO_SECRET_KEY=minio-secret-key
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio1,minio2,minio3,minio4
-      - MINIO_SKIP_CLIENT=yes
   minio3:
     image: 'bitnami/minio:latest'
     environment:
@@ -281,7 +279,6 @@ services:
       - MINIO_SECRET_KEY=minio-secret-key
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio1,minio2,minio3,minio4
-      - MINIO_SKIP_CLIENT=yes
   minio4:
     image: 'bitnami/minio:latest'
     environment:
@@ -289,7 +286,6 @@ services:
       - MINIO_SECRET_KEY=minio-secret-key
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio1,minio2,minio3,minio4
-      - MINIO_SKIP_CLIENT=yes
 ```
 
 MinIO(R) also supports ellipsis syntax (`{1..n}`) to list the MinIO(R) node hosts, where `n` is the number of nodes. This syntax is also valid to use multiple drives (`{1..m}`) on each MinIO(R) node, where `n` is the number of drives per node. You can use the Docker Compose below to create an 2-node distributed MinIO(R) setup with 2 drives per node:
@@ -308,7 +304,6 @@ services:
       - MINIO_SECRET_KEY=miniosecret
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio-{0...1}/data-{0...1}
-      - MINIO_SKIP_CLIENT=yes
   minio-1:
     image: 'bitnami/minio:latest'
     volumes:
@@ -319,7 +314,6 @@ services:
       - MINIO_SECRET_KEY=miniosecret
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=minio-{0...1}/data-{0...1}
-      - MINIO_SKIP_CLIENT=yes
 
 volumes:
   minio_0_data_0:
