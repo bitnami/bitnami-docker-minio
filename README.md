@@ -292,7 +292,7 @@ services:
       - MINIO_SKIP_CLIENT=yes
 ```
 
-MinIO(R) also supports ellipsis syntax (`{1..n}`) to list the MinIO(R) node hosts, where `n` is the number of nodes. This syntax is also valid to use multiple drives (`{1..m}`) on each MinIO(R) node, where `n` is the number of drives per node. You can use the Docker Compose below to create an 4-node distributed MinIO(R) setup with 2 drives per node:
+MinIO(R) also supports ellipsis syntax (`{1..n}`) to list the MinIO(R) node hosts, where `n` is the number of nodes. This syntax is also valid to use multiple drives (`{1..m}`) on each MinIO(R) node, where `n` is the number of drives per node. You can use the Docker Compose below to create an 2-node distributed MinIO(R) setup with 2 drives per node:
 
 ```yaml
 version: '2'
@@ -300,36 +300,36 @@ version: '2'
 services:
   minio-0:
     image: 'bitnami/minio:latest'
+    volumes:
+      - 'minio_0_data_0:/data-0'
+      - 'minio_0_data_1:/data-1'
     environment:
       - MINIO_ACCESS_KEY=minio
       - MINIO_SECRET_KEY=miniosecret
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
-      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_DISTRIBUTED_NODES=minio-{0...1}/data-{0...1}
       - MINIO_SKIP_CLIENT=yes
   minio-1:
     image: 'bitnami/minio:latest'
+    volumes:
+      - 'minio_1_data_0:/data-0'
+      - 'minio_1_data_1:/data-1'
     environment:
-      - MINIO_ACCESS_KEY=minio-access-key
-      - MINIO_SECRET_KEY=minio-secret-key
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniosecret
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
-      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
+      - MINIO_DISTRIBUTED_NODES=minio-{0...1}/data-{0...1}
       - MINIO_SKIP_CLIENT=yes
-  minio-2:
-    image: 'bitnami/minio:latest'
-    environment:
-      - MINIO_ACCESS_KEY=minio-access-key
-      - MINIO_SECRET_KEY=minio-secret-key
-      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
-      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
-      - MINIO_SKIP_CLIENT=yes
-  minio-3:
-    image: 'bitnami/minio:latest'
-    environment:
-      - MINIO_ACCESS_KEY=minio-access-key
-      - MINIO_SECRET_KEY=minio-secret-key
-      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
-      - MINIO_DISTRIBUTED_NODES=minio-{0...3}/data-{0...1}
-      - MINIO_SKIP_CLIENT=yes
+
+volumes:
+  minio_0_data_0:
+    driver: local
+  minio_0_data_1:
+    driver: local
+  minio_1_data_0:
+    driver: local
+  minio_1_data_1:
+    driver: local
 ```
 
 Find more information about the Distributed Mode in the [MinIO(R) documentation](https://docs.min.io/docs/distributed-minio-quickstart-guide.html).

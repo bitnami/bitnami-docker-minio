@@ -69,14 +69,7 @@ EOF
 #   Boolean
 #########################
 is_distributed_ellipses_syntax() {
-    local return_value=1
-
-    if [[ -n "${MINIO_DISTRIBUTED_NODES}" ]]; then
-        if [[ $MINIO_DISTRIBUTED_NODES == *"..."* ]]; then
-            return_value=0
-        fi
-    fi
-    return $return_value
+    [[ -n "${MINIO_DISTRIBUTED_NODES}" ]] && [[ $MINIO_DISTRIBUTED_NODES == *"..."* ]]
 }
 
 ########################
@@ -208,10 +201,8 @@ minio_validate() {
             print_validation_error "Distributed mode is enabled. Nodes must be indicated setting the environment variable MINIO_DISTRIBUTED_NODES"
         else
             read -r -a nodes <<< "$(tr ',;' ' ' <<< "${MINIO_DISTRIBUTED_NODES}")"
-            if ! is_distributed_ellipses_syntax; then
-                if [[ "${#nodes[@]}" -lt 4 ]] || (( "${#nodes[@]}" % 2 )); then
-                    print_validation_error "Number of nodes must even and greater than 4."
-                fi
+            if ! is_distributed_ellipses_syntax && [[ "${#nodes[@]}" -lt 4 ]] || (( "${#nodes[@]}" % 2 )); then
+                print_validation_error "Number of nodes must even and greater than 4."
             fi
         fi
     else
