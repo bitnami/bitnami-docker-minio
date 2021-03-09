@@ -201,7 +201,7 @@ minio_validate() {
             print_validation_error "Distributed mode is enabled. Nodes must be indicated setting the environment variable MINIO_DISTRIBUTED_NODES"
         else
             read -r -a nodes <<< "$(tr ',;' ' ' <<< "${MINIO_DISTRIBUTED_NODES}")"
-            if ! is_distributed_ellipses_syntax && [[ "${#nodes[@]}" -lt 4 ]] || (( "${#nodes[@]}" % 2 )); then
+            if ! is_distributed_ellipses_syntax && ([[ "${#nodes[@]}" -lt 4 ]] || (( "${#nodes[@]}" % 2 ))); then
                 print_validation_error "Number of nodes must even and greater than 4."
             fi
         fi
